@@ -157,7 +157,7 @@ object Instance {
       stage = tags.get("Stage"),
       stack = stack,
       app = app,
-      mainclasses = tags.get("Mainclass").map(_.split(",").toList).orElse(stack.map(stack => app.map(a => s"$stack::$a"))).getOrElse(Nil),
+      mainclasses = tags.get("Name").map(_.split(",").toList).orElse(stack.map(stack => app.map(a => s"$stack::$a"))).getOrElse(Nil),
       role = tags.get("Role"),
       management = ManagementEndpoint.fromTag(addresses.primary.dnsName, tags.get("Management")),
       Some(specs)
@@ -184,11 +184,11 @@ object ManagementEndpoint {
   }
   def fromMap(dnsName:String, map:Map[String,String] = Map.empty):ManagementEndpoint = {
     val protocol = map.getOrElse("protocol","http")
-    val port = map.get("port").map(_.toInt).getOrElse(18080)
-    val path = map.getOrElse("path","/management")
+    val port = map.get("port").map(_.toInt).getOrElse(3000)
+    val path = map.getOrElse("path","/manage")
     val url = s"$protocol://$dnsName:$port$path"
     val source: String = if (map.isEmpty) "convention" else "tag"
-    ManagementEndpoint(protocol, port, path, url, map.getOrElse("format", "gu"), source)
+    ManagementEndpoint(protocol, port, path, url, map.getOrElse("format", "sequoia"), source)
   }
 }
 
